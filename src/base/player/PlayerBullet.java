@@ -20,18 +20,17 @@ public class PlayerBullet extends GameObject implements Physics {
         super(); // gọi hàm tạo của lớp cha
         this.position = new Vector2D(0, 0);
         ArrayList<BufferedImage> images = SpriteUtils.loadImages(
-                "assets/images/player-bullets/a/0.png",
-                "assets/images/player-bullets/a/1.png",
-                "assets/images/player-bullets/a/2.png",
-                "assets/images/player-bullets/a/3.png",
-                "assets/images/sphere/0.png",
-                "assets/images/sphere/1.png",
-                "assets/images/sphere/2.png",
-                "assets/images/sphere/3.png",
-                "assets/images/sphere-bullets/0.png",
-                "assets/images/sphere-bullets/1.png",
-                "assets/images/sphere-bullets/2.png",
-                "assets/images/sphere-bullets/3.png"
+                "assets/images/bullet Smiley/Smiley1.png",
+                "assets/images/bullet Smiley/Smiley2.png",
+                "assets/images/bullet Smiley/Smiley3.png",
+                "assets/images/bullet Smiley/Smiley4.png",
+                "assets/images/bullet Smiley/Smiley5.png",
+                "assets/images/bullet Smiley/Smiley6.png",
+                "assets/images/bullet Smiley/Smiley7.png",
+                "assets/images/bullet Smiley/Smiley8.png",
+                "assets/images/bullet Smiley/Smiley9.png",
+                "assets/images/bullet Smiley/Smiley10.png"
+
         );
 
         // renderer = image

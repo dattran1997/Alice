@@ -2,6 +2,7 @@ package base;
 
 import base.physics.Physics;
 import base.renderer.Renderer;
+import base.scene.SceneManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,9 @@ public class GameObject {
 
     //create(classname) >> instance classname
 
+    public static void add(GameObject go){
+        newGameObjects.add(go);
+    }
     // hàm tạo đối tượng và add đối tượng vào mảng
     public static <E extends  GameObject> E create(Class<E> childClass){
 
@@ -43,6 +47,10 @@ public class GameObject {
         return create(childclass);
     }
 
+    public static void clearAll() {
+        gameObjects.clear();
+        newGameObjects.clear();
+    }
     //physics là đối tượng cần đc check va chạm
     public  static <E extends GameObject> E intersect(Class<E> childClass, Physics physics){
         for(GameObject go : gameObjects){
@@ -73,6 +81,7 @@ public class GameObject {
 //        System.out.println(gameObjects.size());
         gameObjects.addAll(newGameObjects);
         newGameObjects.clear();
+        SceneManager.changeSceneIfNeeded();
 
     }
 
@@ -132,7 +141,7 @@ public class GameObject {
     public void destroy (){
         this.isActive = false;
     }
-
+    public void revive() {this.isActive = true;}
 
     public void run (){
 

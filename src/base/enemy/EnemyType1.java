@@ -1,5 +1,7 @@
 package base.enemy;
 
+import base.GameObject;
+import base.SoundManager;
 import base.physics.BoxCollider;
 import base.renderer.AnimationRenderer;
 
@@ -7,23 +9,33 @@ public class EnemyType1 extends Enemy {
     public EnemyType1(){
         super();
         this.renderer = new AnimationRenderer(
-                "assets/images/enemies/level0/black/0.png",
-                "assets/images/enemies/level0/black/0.png",
-                "assets/images/enemies/level0/black/1.png",
-                "assets/images/enemies/level0/black/2.png",
-                "assets/images/enemies/level0/black/4.png",
-                "assets/images/enemies/level0/black/5.png",
-                "assets/images/enemies/level0/black/6.png",
-                "assets/images/enemies/level0/black/7.png",
-                "assets/images/enemies/level0/black/8.png"
+                "assets/images/Bug weed/bug1.png",
+                "assets/images/Bug weed/bug2.png",
+                "assets/images/Bug weed/bug3.png",
+                "assets/images/Bug weed/bug4.png",
+                "assets/images/Bug weed/bug5.png"
         );
         this.collider = new BoxCollider(32,48);
     }
+
+//    @Override
+//    public void run() {
+//        position.y += 50;
+//    }
 
     @Override
     public  void takeDamage ( int damage){
         if(damage > 0){
             this.destroy();
+            SoundManager.playSound("assets/music/sfx/enemy-explosion.wav");
         }
     }
+
+    @Override
+    public void destroy(){
+        super.destroy();
+        Explosion explosion = GameObject.recycle(Explosion.class);
+        explosion.position.setThis(this.position);
+    }
+
 }

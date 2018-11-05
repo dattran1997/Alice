@@ -2,8 +2,10 @@ package game;
 
 import base.event.KeyEventPress;
 import base.Setting;
+import tklibs.AudioUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -16,20 +18,24 @@ public class GameWindow extends JFrame {
 
     public GameWindow(){
         //setup window
-        this.setSize(Setting.SCREEN_WIDTH,Setting.SCREEN_HEIGHT);
+        //this.setSize(Setting.SCREEN_WIDTH,Setting.SCREEN_HEIGHT);
         this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setupEventListtener();
         //init game
         this.canvas = new GameCanvas();
+        this.canvas.setPreferredSize(new Dimension(Setting.SCREEN_WIDTH,Setting.SCREEN_HEIGHT));
         this.add(canvas);
         this.setVisible(true);
+        AudioUtils.initialize();
+        this.pack();
     }
 
     private void setupEventListtener() {
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                KeyEventPress.isAnyKey = true;
                 if (e.getKeyCode() == KeyEvent.VK_W){
                     KeyEventPress.isUpPress = true;
                 }
@@ -49,6 +55,7 @@ public class GameWindow extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                KeyEventPress.isAnyKey = false;
                 if (e.getKeyCode() == KeyEvent.VK_W) {
                     KeyEventPress.isUpPress = false;
                 }

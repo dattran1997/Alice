@@ -1,9 +1,13 @@
 package game;
 
 import base.*;
-import base.enemy.Enemy;
-import base.enemy.EnemyType1;
+import base.enemy.EnemyManager;
+import base.obstacle.Obstacle;
+import base.obstacle.ObstacleManager;
+import base.obstacle.ObstacleTree1L;
 import base.player.Player;
+import base.scene.SceneManager;
+import base.scene.welcomeScene.WelcomeScene;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,29 +16,24 @@ import java.awt.*;
 public class GameCanvas extends JPanel {
     Background background;
     Player player;
-    EnemyType1 enemy;
-    EnemyType1 enemy1;
-    EnemyType1 enemy2;
+    EnemyManager enemyManager;
+    Obstacle obstacle;
+    ObstacleTree1L obstacleType1;
+    ObstacleManager obstacleManager;
 
 
     //hàm khởi tạo GameCanvas
     public GameCanvas(){
+        SceneManager.signNewScene(new WelcomeScene());
+//        GameObject.add(enemyManager);
 
-        // khởi tạo bg
-        // thay create = recycle
-        background = GameObject.recycle(Background.class);
-
-        // khởi tạo player
-        player = GameObject.recycle(Player.class);
-
-        // create: khởi tạo enemy add vào list
-        this.enemy = GameObject.recycle(EnemyType1.class);
-//        this.enemy1 = GameObject.recycle(EnemyType1.class);
-//        this.enemy2 = GameObject.recycle(EnemyType1.class);
-//
-        this.enemy.position.setThis((float)150,(float)300);
-//        this.enemy1.position.setThis((float)200,(float)100);
-//        this.enemy2.position.setThis((float)260,(float)100);
+//        EnemyType1 enemyType1 = new EnemyType1();
+//        enemyType1.position.setThis(200f,200f);
+//        GameObject.add(enemyType1);
+//        this.obstacle = GameObject.recycle(Obstacle.class);
+//        this.obstacle.position.setThis(100f,1000f);
+//        this.obstacleType1 = GameObject.recycle(ObstacleTree1L.class);
+//        this.obstacleManager = GameObject.recycle(ObstacleManager.class);
     }
 
 

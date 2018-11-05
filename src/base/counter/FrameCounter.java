@@ -22,4 +22,8 @@ public class FrameCounter {
         this.frameCount = 0;
     }
 
+    public void addMaxCount(int maxCount){
+        this.maxCount = maxCount;
+    }
+
 }

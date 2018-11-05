@@ -12,11 +12,18 @@ public class AnimationRenderer extends Renderer {
     ArrayList<BufferedImage> images;
     int currentImage = 0;
     FrameCounter frameCounter;
+    boolean isOne;
 
     public AnimationRenderer (String... urls){
         ArrayList<BufferedImage> images = SpriteUtils.loadImages(urls);
         this.images = images;
         this.frameCounter = new FrameCounter(5);
+    }
+
+    public AnimationRenderer (int framecount, String... urls){
+        ArrayList<BufferedImage> images = SpriteUtils.loadImages(urls);
+        this.images = images;
+        this.frameCounter = new FrameCounter(framecount);
     }
 
 //    public AnimationRenderer (String...urls){
@@ -29,17 +36,33 @@ public class AnimationRenderer extends Renderer {
 //        }
 //        this.images = images;
 //    }
+    public AnimationRenderer(int frameCount, boolean isOnce, String ...urls) {
+        ArrayList<BufferedImage> images = SpriteUtils.loadImages(urls);
+        this.images = images;
+        this.frameCounter = new FrameCounter(frameCount);
+        this.isOne = isOnce;
+    }
 
     public AnimationRenderer (ArrayList<BufferedImage> images){
         this.images = images;
         this.frameCounter = new FrameCounter(5);
+        this.isOne = false;
     }
 
     // maxcount cho tùy chỉnh thời gian delay giữa các lần render ảnh
     public AnimationRenderer (ArrayList<BufferedImage> images, int maxCount){
         this.images = images;
         this.frameCounter = new FrameCounter(maxCount);
+        this.isOne = false;
     }
+
+    public AnimationRenderer (ArrayList<BufferedImage> images, int maxCount, boolean isOne){
+        this.images = images;
+        this.frameCounter = new FrameCounter(maxCount);
+        this.isOne = isOne;
+    }
+
+
 
 
 //    int frameCount = 0;
@@ -56,7 +79,10 @@ public class AnimationRenderer extends Renderer {
 
             if(frameCounter.run()){
                 currentImage ++;
-                if(currentImage >= images.size() -1 ){  /*khi chạy quá chiều dài mảng thì gán về vị trí đầu*/
+                if(this.isOne && this.currentImage >= images.size() -1 ){  /*khi chạy quá chiều dài mảng thì gán về vị trí đầu*/
+                    master.destroy();
+                }
+                if(currentImage >= images.size() - 1){
                     currentImage = 0;
                 }
                 frameCounter.reset();

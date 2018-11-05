@@ -31,6 +31,11 @@ public class AudioUtils {
         return  null;
     }
 
+    public static void playSound(Clip sound) {
+        sound.setFramePosition(0);
+        sound.start();
+    }
+
     public static void initialize() {
         new javafx.embed.swing.JFXPanel();
     }
@@ -40,10 +45,27 @@ public class AudioUtils {
      * @param audioUrl
      * @return
      */
-    public static MediaPlayer playMedia(String audioUrl) {
+    public static MediaPlayer loadMedia(String audioUrl) {
         String uriString = new File(audioUrl).toURI().toString();
         MediaPlayer mediaPlayer = new MediaPlayer(new Media(uriString));
-        mediaPlayer.play();
+        mediaPlayer.setAutoPlay(true);
         return mediaPlayer;
+    }
+
+    public static void playMedia(MediaPlayer media) {
+        media.play();
+    }
+
+    public static void main(String[] args) {
+        //sound (.wav)
+        Clip sound = loadSound("assets/music/sfx/enemy-explosion.wav");
+        playSound(sound);
+
+        //music (.mp3)
+        initialize();
+        MediaPlayer media = loadMedia("assets/music/bgm/ending.mp3");
+        playMedia(media);
+
+        while(true) {}
     }
 }

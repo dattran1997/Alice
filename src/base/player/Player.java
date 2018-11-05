@@ -6,6 +6,9 @@ import base.event.KeyEventPress;
 import base.physics.BoxCollider;
 import base.physics.Physics;
 import base.renderer.AnimationRenderer;
+import base.scene.EndScene.EndScene;
+import base.scene.SceneManager;
+import base.score.Score;
 import tklibs.SpriteUtils;
 
 import java.awt.image.BufferedImage;
@@ -14,11 +17,13 @@ import java.util.ArrayList;
 public class Player extends GameObject implements Physics {
 //    boolean isValidFire;
     FrameCounter fireCounter;
+    FrameCounter scoreCounter;
     PlayerBulletType1 bullet;
     PlayerBulletType1 bullet1;
     PlayerBulletType1 bullet2;
     BoxCollider collider;
     Vector2D velocity;
+    public Score score;
 
 
     public int playerHealth ;
@@ -27,14 +32,14 @@ public class Player extends GameObject implements Physics {
         super();
         // load image thay cho tạo mảng và add ảnh
         this.renderer = new PlayerAnimator();
-        ArrayList<BufferedImage> images = SpriteUtils.loadImages(
-                "assets/images/players/straight/0.png",
-                "assets/images/players/straight/1.png",
-                "assets/images/players/straight/2.png",
-                "assets/images/players/straight/3.png",
-                "assets/images/players/straight/4.png",
-                "assets/images/players/straight/5.png"
-        );
+//        ArrayList<BufferedImage> images = SpriteUtils.loadImages(
+//                "assets/images/players/straight/0.png",
+//                "assets/images/players/straight/1.png",
+//                "assets/images/players/straight/2.png",
+//                "assets/images/players/straight/3.png",
+//                "assets/images/players/straight/4.png",
+//                "assets/images/players/straight/5.png"
+//        );
 //        this.renderer = new AnimationRenderer(images); // renderer là 1 dạng của đa hình vì là kiểu Renderer nhưng gọi new theo AnimationRender
         this.position = new Vector2D();
         position.x = Setting.START_PLAYER_POSITION_X;
@@ -42,8 +47,11 @@ public class Player extends GameObject implements Physics {
         this.playerHealth = Setting.Player_Full_HP;
 
         this.fireCounter = new FrameCounter(10);
-        this.collider =  new BoxCollider(32,48);
+        this.scoreCounter = new FrameCounter(120);
+        this.collider =  new BoxCollider(25,30);
         this.velocity = new Vector2D(0,0);
+        this.score = new Score();
+        GameObject.add(score);
     }
 
     public void move (float velocityX, float velocityY){
@@ -55,7 +63,7 @@ public class Player extends GameObject implements Physics {
             if(KeyEventPress.isUpPress) {
                 this.velocity.setThis(clamp(velocity.x, -3, 3), clamp(velocity.y, -2, 2));
             }else{
-                this.velocity.setThis(clamp(velocity.x, -3, 3), clamp(velocity.y, -8, 8));
+                this.velocity.setThis(clamp(velocity.x, -3, 3), clamp(velocity.y, -3, 3));
             }
         }
     }
@@ -86,44 +94,47 @@ public class Player extends GameObject implements Physics {
 
             if (KeyEventPress.isRightPress ){
                 // need get bg width
-                if (this.position.x < 375){
+                if (this.position.x < Setting.SCREEN_WIDTH - this.collider.width - 30){
                     vx +=3;
+                }else {
+                    vx +=0;
                 }
+//                vx += 3;
             }
             if (KeyEventPress.isLeftPress ){
-                if(position.x > 10)
-                    vx -=4;
+                if(position.x > 30) {
+                    vx -= 4;
+                }else{
+                    vx -= 0;
+                }
+//                vx -=4;
             }
-        }else{
+        }else if (!KeyEventPress.isUpPress){
             if(this.position.y > Setting.SCREEN_HEIGHT - 100){
                 vy += 0;
             }else{
                 vy += 6;
             }
-            if (KeyEventPress.isRightPress ){
-                // need get bg width
-                if (this.position.x < 375){
-                    vx +=1;
-                }
-            }
-            if (KeyEventPress.isLeftPress ){
-                if(position.x > 10)
-                    vx -=1;
+        }
+
+
+        if((this.position.y < 600) && (this.position.y >300)){
+            if(scoreCounter.run()){
+                this.score.addScore(1);
+                scoreCounter.reset();
             }
         }
 
-        if (KeyEventPress.isRightPress ){
-            // need get bg width
-            if (this.position.x < 375){
-                vx +=2;
-            }
-        }
-        if (KeyEventPress.isLeftPress ){
-            if(position.x > 10)
-            vx -=2;
+        if((this.position.x < 30) && (this.position.x >Setting.SCREEN_WIDTH - this.collider.width - 30)){
+            vx =0;
         }
 
         this.move(vx,vy);
+        if (this.position.y <= 0) this.position.y = 0;
+        if (this.position.x <=0) this.position.x = 0;
+        if (this.position.x >= Setting.SCREEN_WIDTH - this.collider.width){
+            this.position.x = Setting.SCREEN_WIDTH - this.collider.width;
+        }
         this.position.addThis(this.velocity);
     }
 
@@ -135,6 +146,7 @@ public class Player extends GameObject implements Physics {
             this.destroy();  // is active = false : ưu tiên code rõ nghĩa hơn ;
             this.playerHealth = 0;
             this.reportStatus();
+
         }
     }
 
@@ -146,6 +158,13 @@ public class Player extends GameObject implements Physics {
             System.out.println("playerHp: "+this.playerHealth);
             System.out.println("you lose");
         }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        Setting.SCORE = this.score.score;
+        SceneManager.signNewScene(new EndScene());
     }
 
     @Override

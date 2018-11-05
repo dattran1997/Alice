@@ -7,6 +7,8 @@ import base.physics.BoxCollider;
 import base.physics.Physics;
 import base.player.Player;
 import base.renderer.AnimationRenderer;
+import base.scene.EndScene.EndScene;
+import base.scene.SceneManager;
 import tklibs.SpriteUtils;
 
 import java.awt.image.BufferedImage;
@@ -21,18 +23,18 @@ public class Enemy extends GameObject implements Physics {
 
     public Enemy() {
         super();
-//        ArrayList<BufferedImage> images = SpriteUtils.loadImages(
-//                "assets/images/enemies/level0/black/0.png",
-//                "assets/images/enemies/level0/black/0.png",
-//                "assets/images/enemies/level0/black/1.png",
-//                "assets/images/enemies/level0/black/2.png",
-//                "assets/images/enemies/level0/black/4.png",
-//                "assets/images/enemies/level0/black/5.png",
-//                "assets/images/enemies/level0/black/6.png",
-//                "assets/images/enemies/level0/black/7.png",
-//                "assets/images/enemies/level0/black/8.png"
-//        );
-//        this.renderer = new AnimationRenderer(images);
+        ArrayList<BufferedImage> images = SpriteUtils.loadImages(
+                "assets/images/enemies/level0/black/0.png",
+                "assets/images/enemies/level0/black/0.png",
+                "assets/images/enemies/level0/black/1.png",
+                "assets/images/enemies/level0/black/2.png",
+                "assets/images/enemies/level0/black/4.png",
+                "assets/images/enemies/level0/black/5.png",
+                "assets/images/enemies/level0/black/6.png",
+                "assets/images/enemies/level0/black/7.png",
+                "assets/images/enemies/level0/black/8.png"
+        );
+        this.renderer = new AnimationRenderer(images);
         this.position = new Vector2D(0, 0);
 //        this.collider = new BoxCollider(32,48);
         this.defineAction();
@@ -42,12 +44,12 @@ public class Enemy extends GameObject implements Physics {
     }
 
     void defineAction(){
-        ActionWait actionWait = new ActionWait(20);
+        ActionWait actionWait = new ActionWait(120);
         Action actionFire = new Action() {
             @Override
             public void run(GameObject master) {
                 //this.fire của base.action
-//                shoot();
+                shoot();
                 this.isDone = true;
             }
 
@@ -107,8 +109,8 @@ public class Enemy extends GameObject implements Physics {
     Random randomX = new Random();
     Random randomY = new Random();
 
-
     // run tương đương vs vòng for vì đc đặt trong loop
+
     @Override
     public void run() {
 //        this.move();
@@ -119,26 +121,44 @@ public class Enemy extends GameObject implements Physics {
 //            }
 //        this.shoot();
         this.action.run(this);
+
+//        intersect
         Player player = GameObject.intersect(Player.class,this);
         if (player != null){
             if(KeyEventPress.isUpPress){
                 player.destroy();
+                Setting.SCORE = player.score.score;
+                SceneManager.signNewScene(new EndScene());
             }
             else {
-                this.destroy();
+                this.takeDamage(10);
+                player.score.addScore(1);
             }
+        }
+
+        if(KeyEventPress.isUpPress){
+            this.position.y -= 3;
+        }else {
+            this.position.y -= 6;
+        }
+
+        if(this.position.y < 0){
+            this.destroy();
         }
     }
 
     public void move(){
-        position.addThis(randomX.nextInt(10 + 9) - 9, randomY.nextInt(10 + 9) - 9);
+//        position.addThis(randomX.nextInt(10 + 9) - 9,0);
+        position.addThis(0,0);
     }
+
     public void shoot() {
-
-//        this.enemyBullet = GameObject.create(EnemyBullet.class);
         this.enemyBullet = GameObject.recycle(EnemyBullet.class);
-
         enemyBullet.position.setThis(this.position.x + 5, this.position.y );
+    }
+
+    public float clamp(float number,float min, float max ){
+        return number < min ? min : number > max ? max : number;
     }
 
     @Override

@@ -37,5 +37,5 @@ public class ActionSequence extends Action {
         }
         this.currentActionIndex = 0;
         this.isDone = false;
-    }
+}
 }
